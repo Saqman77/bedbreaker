@@ -14,8 +14,8 @@ scene.add(mesh)
 
 // Sizes
 const sizes = {
-    width: 800,
-    height: 600
+    width: 1920,
+    height: 945
 }
 
 // Camera
@@ -28,4 +28,23 @@ const renderer = new THREE.WebGLRenderer({
     canvas: canvas
 })
 renderer.setSize(sizes.width, sizes.height)
-renderer.render(scene, camera)
+// Clock
+
+const clock = new THREE.Clock()
+// Animations
+const tick = () =>
+{
+    // Clock
+    const elapsedTime = clock.getElapsedTime()
+
+    // Update objects
+    mesh.rotation.y = elapsedTime
+
+    // Render
+    renderer.render(scene, camera)
+
+    window.requestAnimationFrame(tick)
+
+}
+
+tick()
