@@ -1,22 +1,22 @@
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
+import GUI from 'lil-gui'
+import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js'
+
+//debug
+const gui = new GUI()
 
 /**
  * Base
  */
 // Canvas
 const canvas = document.querySelector('canvas.webgl')
-const material = new THREE.MeshBasicMaterial()
+
 // Scene
 const scene = new THREE.Scene()
-const group = new THREE.Group()
-scene.add(group)
 
-/**
- * Textures
- */
-const textureLoader = new THREE.TextureLoader()
-
+//textures
+const textureLoader = new THREE.TextureLoader() 
 const doorColorTexture = textureLoader.load('./textures/door/color.jpg')
 const doorAlphaTexture = textureLoader.load('./textures/door/alpha.jpg')
 const doorAmbientOcclusionTexture = textureLoader.load('./textures/door/ambientOcclusion.jpg')
@@ -30,30 +30,82 @@ const gradientTexture = textureLoader.load('./textures/gradients/3.jpg')
 doorColorTexture.colorSpace = THREE.SRGBColorSpace
 matcapTexture.colorSpace = THREE.SRGBColorSpace
 
+/**
+ * Lights
+ */
+// const ambientLight = new THREE.AmbientLight(0xffffff, 1)
+// scene.add(ambientLight)
+
+// const pointLight = new THREE.PointLight(0xffffff, 30)
+// pointLight.position.x = 2
+// pointLight.position.y = 3
+// pointLight.position.z = 4
+// scene.add(pointLight)
+
+//environment
+const rgbeLoader = new RGBELoader()
+rgbeLoader.load('./textures/environmentMap/2k.hdr',(environmentMap)=>{
+    environmentMap.mapping = THREE.EquirectangularReflectionMapping
+
+    scene.background = environmentMap
+    scene.environment = environmentMap
+})
+
+// material
+const material = new THREE.MeshPhysicalMaterial()
+material.metalness = 1
+material.roughness = 1
+// material.map = doorColorTexture
+// material.aoMap = doorAmbientOcclusionTexture
+// material.aoMapIntensity = 1
+// material.displacementMap = doorHeightTexture
+// material.displacementScale = 0.1
+// material.metalnessMap = doorMetalnessTexture
+// material.roughnessMap = doorRoughnessTexture
+// material.normalMap = doorNormalTexture
+gui.add(material,'metalness').min(0).max(1).step(0.0001)
+gui.add(material,'roughness').min(0).max(1).step(0.0001)
+// material.clearcoat = 1
+// material.clearcoatRoughness = 0.2
+// gui.add(material,'clearcoat').min(0).max(1).step(0.0001)
+// gui.add(material,'clearcoatRoughness').min(0).max(1).step(0.0001)
+
+material.transmission = 1
+material.ior = 0.5
+material.thickness = 0.5
+gui.add(material,'transmission').min(0).max(1).step(0.0001)
+gui.add(material,'ior').min(1).max(10).step(0.0001)
+gui.add(material,'thickness').min(1).max(10).step(0.0001)
+// material.map = doorColorTexture
+// material.wireframe = true
+// material.transparent = true
+// material.opacity = .5
+// material.side = THREE.DoubleSide
+
+
 //sphere
 const sphere = new THREE.Mesh(
-    new THREE.SphereGeometry( 0.5, 16, 16 ),
+    new THREE.SphereGeometry(0.5,64,64),
     material
-    
 )
-sphere.position.x = - 1.5
-group.add(sphere)
+sphere.position.x = -1.5
+
 //plane
+
 const plane = new THREE.Mesh(
-    new THREE.PlaneGeometry(1, 1),
+    new THREE.PlaneGeometry(1,1,100,100),
     material
-    
 )
-plane.position.x = 0
-group.add(plane)
+
 //torus
+
 const torus = new THREE.Mesh(
-    new THREE.TorusGeometry( 0.3, 0.2, 16, 32),
+    new THREE.TorusGeometry(0.3, 0.2, 64, 64),
     material
-    
 )
 torus.position.x = 1.5
-group.add(torus)
+
+scene.add(sphere, plane, torus)
 /**
  * Sizes
  */
