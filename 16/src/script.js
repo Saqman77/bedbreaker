@@ -192,7 +192,7 @@ house.add(doorLight)
 /**
  * Ghosts
  */
-const ghost1 = new THREE.PointLight('#ff00ff', 6, 3)
+const ghost1 = new THREE.PointLight('#ff00ff', 6, 1.5)
 scene.add(ghost1)
 
 const ghost2 = new THREE.PointLight('#00ffff', 6, 3)
@@ -200,6 +200,46 @@ scene.add(ghost2)
 
 const ghost3 = new THREE.PointLight('#ffff00', 6, 3)
 scene.add(ghost3)
+/**
+ * sphere
+ */
+
+const sphereGeometry = new THREE.SphereGeometry(.2, 16, 16)
+const sphereMaterial1 = new THREE.MeshStandardMaterial({
+    color: 0xff00ff,
+    transparent: true,
+    opacity: 0.9,
+    roughness: 0.3,
+    emissive: 0xff00ff,
+    emissiveIntensity: 0.9
+    
+
+})
+const sphereMaterial2 = new THREE.MeshStandardMaterial({
+    color: 0x00ffff,
+    transparent: true,
+    opacity: 0.9,
+    roughness: 0.3,
+    emissive: 0x00ffff,
+    emissiveIntensity: 0.9
+    
+
+})
+const sphereMaterial3 = new THREE.MeshStandardMaterial({
+    color: 0xff0000,
+    transparent: true,
+    opacity: 0.9,
+    roughness: 0.3,
+    emissive: 0xff0000,
+    emissiveIntensity: 0.9
+    
+
+})
+const sphere1 = new THREE.Mesh(sphereGeometry, sphereMaterial1)
+const sphere2 = new THREE.Mesh(sphereGeometry, sphereMaterial2)
+const sphere3 = new THREE.Mesh(sphereGeometry, sphereMaterial3)
+// sphere.position.set(ghos1.position.x, ghost1.position.y, ghost1.position.z)
+scene.add(sphere1, sphere2, sphere3)
 
 /**
  * Sizes
@@ -327,6 +367,11 @@ const tick = () =>
     ghost3.position.x = Math.cos(ghost3Angle) * (7 + Math.sin(elapsedTime * 0.32))
     ghost3.position.z = Math.sin(ghost3Angle) * (7 + Math.sin(elapsedTime * 0.5))
     ghost3.position.y = Math.sin(elapsedTime * 5) + Math.sin(elapsedTime * 2.5)
+
+    //sphere
+    sphere1.position.set(ghost1.position.x, ghost1.position.y, ghost1.position.z)
+    sphere2.position.set(ghost2.position.x, ghost2.position.y, ghost2.position.z)
+    sphere3.position.set(ghost3.position.x, ghost3.position.y, ghost3.position.z)
 
 
     // Update controls
