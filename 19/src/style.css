@@ -27,7 +27,7 @@ html
     font-family: 'Cabin', sans-serif;
     color: #ffeded;
     text-transform: uppercase;
-    font-size: 7vmin;
+    font-size: calc(2.65vmin + 2.65vmax);
     padding-left: 10%;
     padding-right: 10%;
 }
