@@ -18,7 +18,7 @@ const scene = new THREE.Scene()
  * Textures
  */
 const textureLoader = new THREE.TextureLoader()
-const particleTexture = textureLoader.load('/textures/particles/2.png')
+const particleTexture = textureLoader.load('/textures/particles/1.png')
 
 /**
  * Particles
@@ -49,14 +49,14 @@ for (let i = 0; i < count * 3; i++)
 const particlesMaterial = new THREE.PointsMaterial({
     size: 0.1,
     sizeAttenuation: true,
-    color : new THREE.Color('#ff88cc'),
+    color : new THREE.Color('#808080'),
     transparent: true,
     alphaMap : particleTexture,
     // alphaTest : 0.001
     // depthTest : false
     depthWrite : false,
     blending: THREE.AdditiveBlending,
-    vertexColors: true
+    vertexColors: false
 })
 
 //Points
@@ -110,8 +110,10 @@ controls.enableDamping = true
  * Renderer
  */
 const renderer = new THREE.WebGLRenderer({
-    canvas: canvas
+    canvas: canvas,
+    alpha: true
 })
+renderer.setClearAlpha(0)
 renderer.setSize(sizes.width, sizes.height)
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 
@@ -128,7 +130,7 @@ const tick = () =>
     for(let i = 0; i < count; i++){
         const i3 = i * 3
         const x = particlesGeometry.attributes.position.array[i3]
-        particlesGeometry.attributes.position.array[i3 + 1] = Math.sin(elapsedTime + x)
+        particlesGeometry.attributes.position.array[i3 + 2] = (Math.sin(elapsedTime + x)) * 0.05
     }
     particlesGeometry.attributes.position.needsUpdate = true
 
