@@ -18,7 +18,7 @@ const scene = new THREE.Scene()
  * Textures
  */
 const textureLoader = new THREE.TextureLoader()
-const particleTexture = textureLoader.load('/textures/particles/1.png')
+const particleTexture = textureLoader.load('/textures/particles/2.png')
 
 /**
  * Particles
@@ -28,52 +28,41 @@ const particlesGeometry = new THREE.BufferGeometry()
 const count = 20000
 
 const positions = new Float32Array(count * 3)
-// const colors = new Float32Array(count * 3)
-const sizesarr = new Float32Array(count)
+const colors = new Float32Array(count * 3)
+for (let i = 0; i < count * 3; i++)
+    {
+        positions[i] = (Math.random() - 0.5) * 10
+        colors[i] = Math.random()
+    }
 
-for (let i = 0; i < count; i++) {
-    positions[i * 3] = (Math.random() - 0.5) * 10;
-    positions[i * 3 + 1] = (Math.random() - 0.5) * 10;
-    positions[i * 3 + 2] = (Math.random() - 0.5) * 10;
+    particlesGeometry.setAttribute(
+        'position',
+        new THREE.BufferAttribute(positions, 3)
+    )
 
-    // colors[i * 3] = Math.random()
-    // colors[i * 3 + 1] = Math.random()
-    // colors[i * 3 + 2] = Math.random()
-
-    sizesarr[i] = 0.08;
-    
-}
-
-particlesGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3))
-// particlesGeometry.setAttribute('color', new THREE.BufferAttribute(colors, 3))
-particlesGeometry.setAttribute('size', new THREE.BufferAttribute(sizesarr, 1))
-
-    
+    particlesGeometry.setAttribute(
+        'color',
+        new THREE.BufferAttribute(colors, 3)
+    )
 
 //Material
-// Material
 const particlesMaterial = new THREE.PointsMaterial({
-    size: 0.08,
+    size: 0.1,
     sizeAttenuation: true,
-    color : new THREE.Color('#808080'),
+    color : new THREE.Color('#ff88cc'),
     transparent: true,
     alphaMap : particleTexture,
-    alphaTest : 0.5,
+    // alphaTest : 0.001
     // depthTest : false
-    depthWrite : false
-    // blending: THREE.AdditiveBlending,
-    // vertexColors: true
+    depthWrite : false,
+    blending: THREE.AdditiveBlending,
+    vertexColors: true
 })
-
 
 //Points
 const particles = new THREE.Points(particlesGeometry, particlesMaterial)
 
 scene.add(particles)
-
-//Raycaster
-const raycaster = new THREE.Raycaster()
-const mouse = new THREE.Vector2()
 
 //Cube
 // const cube = new THREE.Mesh(
@@ -121,28 +110,10 @@ controls.enableDamping = true
  * Renderer
  */
 const renderer = new THREE.WebGLRenderer({
-    canvas: canvas,
-    alpha: true
+    canvas: canvas
 })
-renderer.setClearAlpha(0)
 renderer.setSize(sizes.width, sizes.height)
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
-
-/**
- * cursor
- */
-
-// const cursor = {}
-// cursor.x = 0
-// cursor.y = 0
-
-window.addEventListener('mousemove', (event) =>
-{
-    mouse.x = (event.clientX / sizes.width) * 2 - 1
-    mouse.y = -(event.clientY / sizes.height) * 2 + 1
-   
-})
-
 
 /**
  * Animate
@@ -153,40 +124,18 @@ const tick = () =>
 {
     const elapsedTime = clock.getElapsedTime()
 
-   // Update raycaster
-   raycaster.setFromCamera(mouse, camera)
-   const intersects = raycaster.intersectObject(particles)
-
-   const sizesarrAttribute = particlesGeometry.attributes.size
-   const sizesarrArray = sizesarrAttribute.array
-
-   for (let i = 0; i < count; i++) {
-       sizesarrArray[i] = 0.05 // Default size
-   }
-
-   for (let i = 0; i < intersects.length; i ++) {
-
-        intersects[i].particlesGeometry.attributes.size = 0.2
-        // Hover size
-   }
-   renderer.render( scene, camera );
-   particlesGeometry.attributes.sizeneedsUpdate = true
-
-   // Update particles
-   for (let i = 0; i < count; i++) {
-       const i3 = i * 3
-       const x = particlesGeometry.attributes.position.array[i3]
-       particlesGeometry.attributes.position.array[i3 + 2] = Math.sin(elapsedTime + x) * 0.05
-   }
-   particlesGeometry.attributes.position.needsUpdate = true
-   particlesGeometry.attributes.size.needsUpdate = true
-
+    //Update particles
+    for(let i = 0; i < count; i++){
+        const i3 = i * 3
+        const x = particlesGeometry.attributes.position.array[i3]
+        particlesGeometry.attributes.position.array[i3 + 1] = Math.sin(elapsedTime + x)
+    }
+    particlesGeometry.attributes.position.needsUpdate = true
 
     // Update controls
     controls.update()
 
     // Render
-    
     renderer.render(scene, camera)
 
     // Call tick again on the next frame
