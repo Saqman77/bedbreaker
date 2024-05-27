@@ -1,6 +1,7 @@
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
+import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js'
 import GUI from 'lil-gui'
 
 /**
@@ -18,17 +19,25 @@ const scene = new THREE.Scene()
 /**
  *  Models
  */
+const dracoLoader = new DRACOLoader()
+dracoLoader.setDecoderPath('/draco/')
 
 const gltfloader = new GLTFLoader() 
+gltfloader.setDRACOLoader(dracoLoader)
+let mixer = null
 gltfloader.load(
-    '/models/FlightHelmet/glTF/FlightHelmet.gltf', 
+    '/models/Fox/glTF/Fox.gltf', 
     (gltf) => 
         {
+             mixer = new THREE.AnimationMixer(gltf.scene)
+            const action = mixer.clipAction(gltf.animations[2])
+            action.play()
         //    const children = [...gltf.scene.children]
         //    for (const child of children)
         //     {
         //         scene.add(child)
         //     }
+        gltf.scene.scale.set(0.025, 0.025, 0.025)
         scene.add(gltf.scene)
         }
 )
@@ -123,6 +132,14 @@ const tick = () =>
     const elapsedTime = clock.getElapsedTime()
     const deltaTime = elapsedTime - previousTime
     previousTime = elapsedTime
+
+    //Update mixer
+
+    if (mixer !== null)
+    {
+        mixer.update(deltaTime)
+    }
+    
 
     // Update controls
     controls.update()
