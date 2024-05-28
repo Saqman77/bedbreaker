@@ -19,28 +19,35 @@ const scene = new THREE.Scene()
 /**
  *  Models
  */
+
+const textureLoader = new THREE.TextureLoader();
+const texture = textureLoader.load('/models/BUILDINGS_READY_GLB/tex/04_Ferreri_World_Abu_Dhabi_basecolor.webp');
+texture.colorSpace =  THREE.SRGBColorSpace
+
 const dracoLoader = new DRACOLoader()
 dracoLoader.setDecoderPath('/draco/')
 
 const gltfloader = new GLTFLoader() 
 gltfloader.setDRACOLoader(dracoLoader)
-let mixer = null
-gltfloader.load(
-    '/models/Fox/glTF/Fox.gltf', 
+let ferrari = 0
+  gltfloader.load(
+    '/models/BULDINGS_READY_GLB/04_FERRARI_WORLD.glb', 
     (gltf) => 
         {
-             mixer = new THREE.AnimationMixer(gltf.scene)
-            const action = mixer.clipAction(gltf.animations[2])
-            action.play()
+           
         //    const children = [...gltf.scene.children]
         //    for (const child of children)
         //     {
         //         scene.add(child)
         //     }
-        gltf.scene.scale.set(0.025, 0.025, 0.025)
-        scene.add(gltf.scene)
+        console.log(gltf)
+        ferrari = gltf.scene
+        scene.add(ferrari)
         }
 )
+
+
+
 
 /**
  * Floor
@@ -135,10 +142,6 @@ const tick = () =>
 
     //Update mixer
 
-    if (mixer !== null)
-    {
-        mixer.update(deltaTime)
-    }
     
 
     // Update controls
