@@ -3,7 +3,7 @@ import { defineConfig } from 'vite';
 export default defineConfig({
     root: 'src/',
     publicDir: '../static/',
-    base: '/bedbreaker/19/dist/',
+    base: './',
     server:
     {
         host: true, // Open to local network and display URL
