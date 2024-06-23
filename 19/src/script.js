@@ -196,7 +196,7 @@ window.addEventListener('scroll',() =>{
         }
     )
     }
-   console.log(newSection)
+//    console.log(newSection)
 })
 
 //cursor
@@ -208,7 +208,7 @@ window.addEventListener('mousemove', (event) =>
 {
    cursor.x = event.clientX / sizes.width  - 0.5
    cursor.y = event.clientY / sizes.height - 0.5
-   console.log(cursor.x)
+//    console.log(cursor.x)
 })
 
 /**
@@ -221,7 +221,7 @@ const tick = () =>
     const elapsedTime = clock.getElapsedTime()
     const deltaTime = elapsedTime - previousTime
     previousTime = elapsedTime
-    console.log(deltaTime)
+    // console.log(deltaTime)
 
     camera.position.y = - scrollY / sizes.height * objectsDistance
 
