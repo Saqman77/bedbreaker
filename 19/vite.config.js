@@ -1,4 +1,6 @@
-export default {
+import { defineConfig } from 'vite';
+
+export default defineConfig({
     root: 'src/',
     publicDir: '../static/',
     base: '/bedbreaker/19/dist/',
@@ -13,4 +15,4 @@ export default {
         emptyOutDir: true, // Empty the folder first
         sourcemap: true // Add sourcemap
     },
-}
+})
