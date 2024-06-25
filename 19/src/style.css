@@ -31,6 +31,42 @@ html
     padding-left: 10%;
     padding-right: 10%;
 }
+p 
+    {
+        align-self: self-end;
+        color: white;
+        font-family: 'Cabin', sans-serif;
+        font-size: 1vw;
+    }
+
+@media  (max-width: 1400px) {
+    .section
+    {
+        font-size: calc(1.65vmin + 1.65vmax);
+    }
+}
+@media  (max-width: 768px) {
+    .section
+    {
+        font-size: calc(2.5vmin + 2.5vmax);
+        padding-top: 20dvh;
+        align-items: flex-start;
+        padding-left: 5%;
+        padding-right: 5%;
+    }
+
+    p 
+    {
+        align-self: self-end;
+        font-size: 3vw;
+    }
+    /* section:last-child
+    {
+        flex-direction: column !important;
+        /* align-items: normal; */
+        /* justify-content: space-between !important; 
+    /* } */
+}
 
 section:nth-child(odd)
 {

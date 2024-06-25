@@ -142,7 +142,39 @@ window.addEventListener('resize', () =>
     // Update renderer
     renderer.setSize(sizes.width, sizes.height)
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+     // Update objects
+     resizeObjects()
 })
+
+const resizeObjects = () => {
+    let scaleFactor = sizes.width * 0.0005; // Adjust this factor as needed
+    let positionFactor = sizes.width / 1400;
+    if(window.innerWidth <= 768)
+        {
+            scaleFactor = sizes.width / 900
+            positionFactor = 0;
+            mesh3.position.y = - objectsDistance * 2.5
+            mesh2.position.y = - objectsDistance * 1.2
+            mesh1.position.y = - objectsDistance * 0.15
+        }
+    for (const mesh of sectionMeshes) {
+        mesh.scale.set(scaleFactor, scaleFactor, scaleFactor)
+    }
+
+    if(window.innerWidth < 1400)
+        {
+            mesh1.position.x = 0.5 * positionFactor
+            mesh2.position.x = -0.5 * positionFactor
+            mesh3.position.x =  0.5 * positionFactor
+        }
+    mesh1.position.x = 1.5 * positionFactor
+    mesh2.position.x = -1.5 * positionFactor
+    mesh3.position.x =  1.5 * positionFactor
+}
+
+resizeObjects() // Initial call to set the sizes
+
+
 //Camera Group
 
  const cameraGroup =  new THREE.Group
