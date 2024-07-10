@@ -15,18 +15,24 @@ const canvas = document.querySelector('canvas.webgl')
 const scene = new THREE.Scene()
 
 /**
+ *  Textures
+ */
+const textureLoader = new THREE.TextureLoader()
+const particleTexture = textureLoader.load('/textures/particles/9.png')
+
+/**
  * Galaxy
  */
 const parameters = {}
-parameters.count = 500000
+parameters.count = 450000
 parameters.size = 0.01
 parameters.radius = 5
 parameters.branches = 3
 parameters.spin = 1
-parameters.randomness = 0.2
+parameters.randomness = 0.5
 parameters.randomnessPower = 3
-parameters.insideColor = '#ff6030'
-parameters.outsideColor = '#1b3984'
+parameters.insideColor = '#312eff'
+parameters.outsideColor = '#1b8360'
 
 let particlesGeometry = null
 let particlesMaterial = null
@@ -34,6 +40,7 @@ let particles = null
 
 const generateGalaxy =  () =>
     {
+        
         /**
          * Destroy old galaxy
          */
@@ -88,6 +95,8 @@ const generateGalaxy =  () =>
     particlesMaterial = new THREE.PointsMaterial({
     size : parameters.size,
     sizeAttenuation : true,
+    transparent: true,
+    alphaMap : particleTexture,
     // color : new THREE.Color('red'),
     depthWrite: false,
     blending: THREE.AdditiveBlending,
@@ -102,7 +111,7 @@ const generateGalaxy =  () =>
 
     generateGalaxy()
     gui.add(parameters, 'count').min(100).max(1000000).step(100).onFinishChange(generateGalaxy)
-gui.add(parameters, 'size').min(0.001).max(0.1).step(0.001).onFinishChange(generateGalaxy)
+// gui.add(parameters, 'size').min(0.001).max(0.1).step(0.001).onFinishChange(generateGalaxy)
 gui.add(parameters, 'radius').min(0.01).max(20).step(0.01).onFinishChange(generateGalaxy)
 gui.add(parameters, 'branches').min(2).max(20).step(1).onFinishChange(generateGalaxy)
 gui.add(parameters, 'spin').min(- 5).max(5).step(0.001).onFinishChange(generateGalaxy)
@@ -141,6 +150,7 @@ window.addEventListener('resize', () =>
     // Update renderer
     renderer.setSize(sizes.width, sizes.height)
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+    generateGalaxy()
 })
 
 /**
@@ -175,7 +185,7 @@ const tick = () =>
 {
     const elapsedTime = clock.getElapsedTime()
 
-    particles.rotation.y = elapsedTime * 0.05
+    // particles.rotation.y = elapsedTime * 0.05
 
     // Update controls
     controls.update()
