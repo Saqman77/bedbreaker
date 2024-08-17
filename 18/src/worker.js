@@ -3,8 +3,11 @@ import * as THREE from 'three';
 self.onmessage = function(event)
 {
     const parameters = event.data
-    const { radius, branches, spin, randomnessPower, insideColor, outsideColor, count} = parameters;
+    // const { radius, branches, spin, randomnessPower, insideColor, outsideColor, count} = parameters;
+    console.log(parameters)
 
+        const positions = new Array(parameters.count)
+        const colors = new Array(parameters.count)
         const colorInside = new THREE.Color(parameters.insideColor)
         const colorOutside = new THREE.Color(parameters.outsideColor)
 
@@ -31,4 +34,6 @@ self.onmessage = function(event)
                     colors[i3 + 1] = mixedColour.g
                     colors[i3 + 2] = mixedColour.b
                 }
+
+                self.postMessage({ positions, colors});
 }
