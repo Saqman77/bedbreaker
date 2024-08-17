@@ -6,8 +6,8 @@ self.onmessage = function(event)
     // const { radius, branches, spin, randomnessPower, insideColor, outsideColor, count} = parameters;
     console.log(parameters)
 
-        const positions = new Array(parameters.count)
-        const colors = new Array(parameters.count)
+        const positions = new Float32Array(parameters.count*3)
+        const colors = new Float32Array(parameters.count*3)
         const colorInside = new THREE.Color(parameters.insideColor)
         const colorOutside = new THREE.Color(parameters.outsideColor)
 

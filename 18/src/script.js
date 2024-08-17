@@ -21,7 +21,7 @@ const scene = new THREE.Scene()
 const parameters = {}
 parameters.count = 300000
 parameters.size = 0.01
-parameters.radius = 5
+parameters.radius = Math.round(5)
 parameters.branches = 3
 parameters.spin = 1
 parameters.randomness = 0.2
@@ -42,11 +42,11 @@ function chunkify(array,n)
     }
     return chunks;
 }
-// let isGenerating = false;
+let isGenerating = false;
 const generateGalaxy = () => {
 
-    // if (isGenerating) return; // Prevent multiple calls
-    // isGenerating = true;
+    if (isGenerating) return; // Prevent multiple calls
+    isGenerating = true;
     const cleanParams = {
         count: parameters.count,
         radius: parameters.radius,
@@ -57,25 +57,23 @@ const generateGalaxy = () => {
         outsideColor: parameters.outsideColor
     };
            // Destroy old galaxy
-           if (particles !== null) {
-            particlesGeometry.dispose();
-            particlesMaterial.dispose();
-            scene.remove(particles);
-            particles = null;
-            particlesGeometry = null;
-            particlesMaterial = null;
-        }
+
     let completedWorkers = 0;
     let allPositions = [];
     let allColors = [];
 
  
+    // const positions = new Float32Array(parameters.count * 3);
+    // const colors = new Float32Array(parameters.count * 3);
 
+    // particlesGeometry = new THREE.BufferGeometry();
+    // particlesGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    // particlesGeometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
     // Create an array of indices representing the total particle count
-    const arrayToChunk = new Array(parameters.count);
+    const arrayToChunk = new Float32Array(parameters.count);
 
     // Split the array into chunks for workers
-    const chunks = chunkify(arrayToChunk, 3); // Adjust the number of chunks/workers as needed
+    const chunks = chunkify(arrayToChunk, 1); // Adjust the number of chunks/workers as needed
 
     chunks.forEach((chunk, i) => {
         const worker = new Worker();
@@ -85,6 +83,14 @@ const generateGalaxy = () => {
 
         worker.onmessage = function (event) {
             // Safely handle large datasets incrementally if needed
+            if (particles !== null) {
+                particlesGeometry.dispose();
+                particlesMaterial.dispose();
+                scene.remove(particles);
+                // particles = null;
+                // particlesGeometry = null;
+                // particlesMaterial = null;
+            }
             const { positions, colors } = event.data;
            console.log(`worker ${i} completed`)
             // Process small batches to avoid stack overflow
@@ -122,7 +128,7 @@ const generateGalaxy = () => {
                 });
         
                 particles = new THREE.Points(particlesGeometry, particlesMaterial);
-                // isGenerating = false; 
+                isGenerating = false; 
                 
                 scene.add(particles);
                 
@@ -131,7 +137,7 @@ const generateGalaxy = () => {
     });
 };
 
-    generateGalaxy()
+    // generateGalaxy()
 gui.add(parameters, 'count').min(100).max(1000000).step(100).onFinishChange(generateGalaxy)
 gui.add(parameters, 'size').min(0.001).max(0.1).step(0.001).onFinishChange(generateGalaxy)
 gui.add(parameters, 'radius').min(0.01).max(20).step(0.01).onFinishChange(generateGalaxy)
@@ -144,15 +150,25 @@ gui.addColor(parameters, 'outsideColor').onFinishChange(generateGalaxy)
 
 
 
-// gsap.from(parameters,
-//     {
-//         duration:3,
-//         count:100,
-//         radius:1,
-//         onStart:generateGalaxy,
-//         onUpdate:generateGalaxy,
-//         onComplete:generateGalaxy
-//     })
+gsap.from(parameters,
+    {
+        duration:1,
+        count: 90000,
+        size: 0.01,
+        radius: Math.round(1.5),
+        branches: 3,
+        spin: 0,
+        randomness: 0.5,
+        randomnessPower: 10,
+        insideColor: '#312eff',
+        outsideColor: '#1b8360',
+        // onStart:generateGalaxy,
+        // onUpdate: () => {
+        //     if (!isGenerating) generateGalaxy(); // Avoid overlapping generation
+        // },
+        onUpdate:generateGalaxy,
+        onComplete:generateGalaxy
+    })
 
 
 /**
