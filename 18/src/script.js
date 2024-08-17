@@ -1,7 +1,8 @@
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import GUI from 'lil-gui'
-
+import gsap from 'gsap'
+import worker from './worker.js?worker'
 /**
  * Base
  */
@@ -18,7 +19,7 @@ const scene = new THREE.Scene()
  * Galaxy
  */
 const parameters = {}
-parameters.count = 500000
+parameters.count = [300000]
 parameters.size = 0.01
 parameters.radius = 5
 parameters.branches = 3
@@ -32,8 +33,31 @@ let particlesGeometry = null
 let particlesMaterial = null
 let particles = null
 
+function chunkify(array,n)
+{
+    let chunks = []
+    for (let i = n; i > 0; i--)
+    {
+        chunks.push(array.splice(0,Math.ceil(array.length/i)))
+    }
+    return chunks;
+}
+
 const generateGalaxy =  () =>
     {
+        const cleanParams = {
+            count: parameters.count,
+            radius: parameters.radius,
+            branches: parameters.branches,
+            spin: parameters.spin,
+            randomnessPower: parameters.randomnessPower,
+            insideColor: parameters.insideColor,
+            outsideColor: parameters.outsideColor
+        };
+
+        let completedWorkers = 0;
+
+        
         /**
          * Destroy old galaxy
          */
@@ -42,62 +66,63 @@ const generateGalaxy =  () =>
                 particlesGeometry.dispose()
                 particlesMaterial.dispose()
                 scene.remove(particles)
-            }
+            };
+
+            const workerParams = {
+                ...cleanParams
+            };
+    
 
         //Geometry
         particlesGeometry = new THREE.BufferGeometry()
         const positions = new Float32Array(parameters.count * 3)
         const colors = new Float32Array(parameters.count * 3)
-        const colorInside = new THREE.Color(parameters.insideColor)
-        const colorOutside = new THREE.Color(parameters.outsideColor)
-
-            for(let i = 0; i < parameters.count; i++)
+        const chunks = chunkify(cleanParams.count,2)
+        chunks.forEach((data,i)=>
+            {
+                const worker = new Worker()
+                cleanParams.count = data
+                worker.postMessage(workerParams);
+                worker.onmessage = function(event)
                 {
-                    const i3 = i * 3
-
-                    const radius = Math.random() * parameters.radius
-                    const spinAngle = radius * parameters.spin
-                    const branchAngle = (i % parameters.branches) / parameters.branches * Math.PI * 2
-                    
-                    const randomX = Math.pow(Math.random(), parameters.randomnessPower) * (Math.random() < 0.5 ? 1 : -1)
-                    const randomY = Math.pow(Math.random(), parameters.randomnessPower) * (Math.random() < 0.5 ? 1 : -1)
-                    const randomZ = Math.pow(Math.random(), parameters.randomnessPower) * (Math.random() < 0.5 ? 1 : -1)
-                    positions[i3] = Math.sin(branchAngle + spinAngle) * radius + randomX
-                    positions[i3 + 1] = randomY
-                    positions[i3 + 2] = Math.cos(branchAngle + spinAngle) * radius + randomZ
-
-                    //Colour
-                    const mixedColour = colorInside.clone()
-                    mixedColour.lerp(colorOutside, radius / parameters.radius)
-
-                    colors[i3] = mixedColour.r
-                    colors[i3 + 1] = mixedColour.g
-                    colors[i3 + 2] = mixedColour.b
+                    console.log(`workers${i} completed`)
+                    completedWorkers++
+                    const data = event.data;
+                    const positions = new Float32Array(data.positions);
+                    const colors = new Float32Array(data.colors);
+                     //BufferAttribute
+                    particlesGeometry.setAttribute(
+                        'position',
+                        new THREE.BufferAttribute(positions, 3)
+                    )
+                    particlesGeometry.setAttribute(
+                        'color',
+                        new THREE.BufferAttribute(colors, 3)
+                    )
+                    if (completedWorkers === 2)
+                    {
+                        //Material
+                        particlesMaterial = new THREE.PointsMaterial(
+                        {
+                            size : parameters.size,
+                            sizeAttenuation : true,
+                            // color : new THREE.Color('red'),
+                            depthWrite: false,
+                            blending: THREE.AdditiveBlending,
+                            vertexColors: true
+                        })
+                        /**
+                         * Points
+                         */
+                         particles = new THREE.Points(particlesGeometry, particlesMaterial)
+                         scene.add(particles)
+                    }
+                   
                 }
-            //BufferAttribute
-            particlesGeometry.setAttribute(
-                'position',
-                new THREE.BufferAttribute(positions, 3)
-            )
-            particlesGeometry.setAttribute(
-                'color',
-                new THREE.BufferAttribute(colors, 3)
-            )
 
-    //Material
-    particlesMaterial = new THREE.PointsMaterial({
-    size : parameters.size,
-    sizeAttenuation : true,
-    // color : new THREE.Color('red'),
-    depthWrite: false,
-    blending: THREE.AdditiveBlending,
-    vertexColors: true
- })
-/**
- * Points
- */
- particles = new THREE.Points(particlesGeometry, particlesMaterial)
- scene.add(particles)
+            })
+        
+
     }
 
     generateGalaxy()
@@ -111,14 +136,16 @@ gui.add(parameters, 'randomnessPower').min(1).max(10).step(0.001).onFinishChange
 gui.addColor(parameters, 'insideColor').onFinishChange(generateGalaxy)
 gui.addColor(parameters, 'outsideColor').onFinishChange(generateGalaxy)
 
-/**
- * Test cube
- */
-// const cube = new THREE.Mesh(
-//     new THREE.BoxGeometry(1, 1, 1),
-//     new THREE.MeshBasicMaterial()
-// )
-// scene.add(cube)
+
+
+gsap.from(parameters,
+    {
+        duration:3,
+        count:40000,
+        radius:1,
+        onUpdate:generateGalaxy
+    })
+
 
 /**
  * Sizes
