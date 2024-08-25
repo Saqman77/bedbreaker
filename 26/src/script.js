@@ -1,16 +1,6 @@
-import Robot from './Robot.js'
-import FlyingRobot from './FlyingRobot.js'
+import Experience from './Experience/Experience.js'
 
-
-
-const wallE = new Robot('Wall-E', 0)
-const ultron = new FlyingRobot('Ultron', 2)
-const astroBoy= new FlyingRobot('Astro-Boy', 2)
-// wallE.sayHi()
-// ultron.sayHi()
-// astroBoy.sayHi()
-// console.log(robot)
-
+const experience = new Experience(document.querySelector('canvas.webgl'))
 
 // import * as THREE from 'three'
 // import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
