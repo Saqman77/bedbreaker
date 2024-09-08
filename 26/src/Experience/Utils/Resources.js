@@ -1,14 +1,14 @@
 import * as THREE from 'three'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
-import EventEmitter from './EventEmitter'
+import EventEmitter from './EventEmitter.js';
 
 export default class Resources extends EventEmitter
 {
     constructor(sources)
     {
         super()
-        
-        // Options
+
+        //Options
         this.sources = sources
 
         // Setup
@@ -18,6 +18,7 @@ export default class Resources extends EventEmitter
 
         this.setLoaders()
         this.startLoading()
+        
     }
 
     setLoaders()
@@ -30,32 +31,32 @@ export default class Resources extends EventEmitter
 
     startLoading()
     {
-        //Load each source
-        for(const source of this.sources)
+        // Load each source
+        for (const source of this.sources)
         {
             if(source.type === 'gltfModel')
             {
-                this.loaders.gltfLoader.load(source.path, (file) => 
+                this.loaders.gltfLoader.load(source.path,(file) => 
                     {
                         this.sourceLoaded(source, file)
                     })
             }
 
             else if(source.type === 'texture')
-                {
-                    this.loaders.textureLoader.load(source.path, (file) => 
-                        {
-                            this.sourceLoaded(source, file)
-                        })
-                }
+            {
+                this.loaders.textureLoader.load(source.path,(file) => 
+                    {
+                        this.sourceLoaded(source, file)
+                    })
+            }
 
             else if(source.type === 'cubeTexture')
-                {
-                    this.loaders.cubeTextureLoader.load(source.path, (file) => 
-                        {
-                            this.sourceLoaded(source, file)
-                        })
-                }
+            {
+                this.loaders.cubeTextureLoader.load(source.path,(file) => 
+                    {
+                        this.sourceLoaded(source, file)
+                    })
+            }
         }
     }
 
@@ -65,9 +66,9 @@ export default class Resources extends EventEmitter
         
         this.loaded++
 
-        if(this.loaded === this.toLoad)
+        if (this.loaded === this.toLoad)
         {
-            this.trigger('ready')
+            this.trigger('loaded')
         }
     }
 }

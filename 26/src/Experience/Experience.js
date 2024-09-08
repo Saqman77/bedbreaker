@@ -5,32 +5,28 @@ import Camera from './Camera.js'
 import Renderer from './Renderer.js'
 import World from './World/World.js'
 import Resources from './Utils/Resources.js'
-import Debug from './Utils/Debug.js'
 import sources from './sources.js'
 
 let instance = null
 
-export default class Experience
+export default class Experience 
 {
     constructor(canvas)
     {
-
         if(instance)
         {
             return instance
         }
-        
+
         instance = this
 
         // Global access
         window.experience = this
-        
 
         // Options
         this.canvas = canvas
 
         // Setup
-        this.debug = new Debug()
         this.sizes = new Sizes()
         this.time = new Time()
         this.scene = new THREE.Scene()
@@ -40,16 +36,17 @@ export default class Experience
         this.world = new World()
 
         // Sizes resize event
-        this.sizes.on('resize', ()=>
+        this.sizes.on('resize', () => 
             {
                 this.resize()
             })
-        
+
         // Time tick event
         this.time.on('tick', () => 
             {
                 this.update()
             })
+        
     }
 
     resize()
@@ -61,13 +58,6 @@ export default class Experience
     update()
     {
         this.camera.update()
-        this.world.update()
         this.renderer.update()
-    }
-
-    destroy()
-    {
-        this.sizes.off('resize')
-        this.time.off('tick')
     }
 }
