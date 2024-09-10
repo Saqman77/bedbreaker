@@ -1,6 +1,7 @@
 import * as THREE from 'three'
 import Experience from '../Experience.js';
 import Environment from './Environment.js';
+import Floor from './Floor.js';
 
 export default class World
 {
@@ -17,11 +18,13 @@ export default class World
             new THREE.MeshStandardMaterial()
         )
         this.scene.add(testMesh)
+        
         // Wait for resources
         this.resources.on('loaded', () => 
             {
                 // Setup
                 this.environment = new Environment()
+                this.floor = new Floor()
             })
 
     }
