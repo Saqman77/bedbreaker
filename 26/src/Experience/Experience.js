@@ -6,6 +6,7 @@ import Renderer from './Renderer.js'
 import World from './World/World.js'
 import Resources from './Utils/Resources.js'
 import sources from './sources.js'
+import Fox from './World/Fox.js'
 
 let instance = null
 
@@ -58,6 +59,8 @@ export default class Experience
     update()
     {
         this.camera.update()
+        this.world.update()
         this.renderer.update()
+        
     }
 }
