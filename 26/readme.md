@@ -1,4 +1,4 @@
-# Three.js Journey
+# Kandura O-O-P Js - 3Js environment
 
 ## Setup
 Download [Node.js](https://nodejs.org/en/download/).

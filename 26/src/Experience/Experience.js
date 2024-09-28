@@ -66,34 +66,34 @@ export default class Experience
         
     }
 
-    destroy()
-    {
-        this.sizes.off('resize')
-        this.time.off('tick')
+    // destroy()
+    // {
+    //     this.sizes.off('resize')
+    //     this.time.off('tick')
 
-        // Traverse the scene and dispose
-        this.scene.traverse((child) =>
-            {
-                if(child instanceof THREE.Mesh)
-                {
-                    child.geometry.dispose()
+    //     // Traverse the scene and dispose
+    //     this.scene.traverse((child) =>
+    //         {
+    //             if(child instanceof THREE.Mesh)
+    //             {
+    //                 child.geometry.dispose()
                     
-                    for(const key in child.material)
-                    {
-                        const value = child.material[key]
+    //                 for(const key in child.material)
+    //                 {
+    //                     const value = child.material[key]
 
-                        if(value && typeof value.dispose === 'function')
-                        {
-                            value.dispose()
-                        }
-                    }
-                }
-            })
+    //                     if(value && typeof value.dispose === 'function')
+    //                     {
+    //                         value.dispose()
+    //                     }
+    //                 }
+    //             }
+    //         })
 
-        this.camera.controls.dispose()    
-        this.renderer.instance.dispose()
+    //     this.camera.controls.dispose()    
+    //     this.renderer.instance.dispose()
 
-        if(this.debug.active)
-            this.debug.ui.destroy()
-    }
+    //     if(this.debug.active)
+    //         this.debug.ui.destroy()
+    // }
 }

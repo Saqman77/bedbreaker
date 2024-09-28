@@ -29,5 +29,11 @@ export default [
         name:'foxModel',
         type:'gltfModel',
         path:'models/Fox/glTF/Fox.gltf'
-    }
+    },
+
+    {
+        name:'emiratiModel',
+        type:'gltfModel',
+        path:'models/kandura/glTF-Binary/emirati(1).glb'
+    },
 ]
