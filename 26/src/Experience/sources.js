@@ -34,6 +34,6 @@ export default [
     {
         name:'emiratiModel',
         type:'gltfModel',
-        path:'models/kandura/glTF-Binary/emirati(1).glb'
+        path:'models/kandura/glTF-Binary(re-work)/emirati.glb'
     },
 ]
