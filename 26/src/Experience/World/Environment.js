@@ -17,7 +17,7 @@ export default class Environment
         }
 
         // Setup
-        this.setSunLight()
+        // this.setSunLight()
         // this.setEnvironmentMap()
     }
 
@@ -53,10 +53,10 @@ export default class Environment
     setEnvironmentMap()
     {
         this.environmentMap = {}
-        // this.scene.background = new THREE.Color( 1, 0, 1 );
+        this.scene.background = new THREE.Color( 1, 0, 1 );
         this.environmentMap.intensity = 0.1
         this.environmentMap.texture = new THREE.Color( 1, 0, 1 );
-        // this.environmentMap.texture.colorSpace = THREE.SRGBColorSpace
+        this.environmentMap.texture.colorSpace = THREE.SRGBColorSpace
 
         this.scene.environment = this.environmentMap.texture
 

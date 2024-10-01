@@ -34,7 +34,7 @@ export default class Emirati
         // this.model.Mesh.Geometry.computeFaceNormals(); 
         // this.model.Geometry.computeVertexNormals(); 
 
-        this.model.colorSpace = THREE.SRGBColorSpace
+        // this.model.colorSpace = THREE.SRGBColorSpace
 
         // this.model.material = new THREE.MeshPhongMaterial(
         //     {
@@ -50,12 +50,32 @@ export default class Emirati
 
         this.scene.add(this.model)
 
-        this.model.traverse((child) => 
+        this.scene.traverse((child) => 
             {
                 if(child instanceof THREE.Mesh )
                 {
+                        // child.geometry.computeFaceNormals(); 
+                        child.geometry.computeVertexNormals();
 
-                        console.log(child)
+                        for(const key in child.material)
+                            
+                            {
+                                const value = child[key]
+
+                                console.log(child[key])
+
+                                // if(value instanceof THREE.BufferGeometry)
+                                // {
+                                //     value.computeFaceNormals(); 
+                                //     value.computeVertexNormals();
+                                // }
+
+                                // if(value.material instanceof THREE.BufferGeometry)
+                                // {
+                                //     value.computeFaceNormals(); 
+                                //     value.computeVertexNormals();
+                                // }
+                            }
 
                         // if (child.name == 'environment')
                         //     child.name
@@ -72,17 +92,17 @@ export default class Emirati
                         // }
                 
                         // // // Apply new color
-                        child.material =  new THREE.MeshPhongMaterial( 
-                            {
-                                color: 0xff0000,
-                                // side: THREE.DoubleSide,
-                                shininess: 0,
-                                emissive: emissiveColour,
-                                emissiveIntensity:0.1,
-                                // specular: 0x00000,
-                                // blending: THREE.AdditiveBlending,
-                                vertexColors:true
-                            } )
+                        // child.material =  new THREE.MeshPhongMaterial( 
+                        //     {
+                        //         // color: 0xff0000,
+                        //         // side: THREE.DoubleSide,
+                        //         // shininess: 0,
+                        //         // emissive: emissiveColour,
+                        //         // emissiveIntensity:0.5,
+                        //         // specular: 0x00000,
+                        //         // blending: THREE.AdditiveBlending,
+                        //         // vertexColors:true
+                        //     } )
                         // child.material.side = THREE.DoubleSide
                         // child.material.color = new THREE.Color(1, 0, 1); // Magenta color
                 
@@ -114,10 +134,10 @@ export default class Emirati
             //     }
             
     }
-    update()
-    {
-        // this.environment.environmentMap.updateMaterials()
-        // this.scene.matrixWorldNeedsUpdate = true
-    }
+    // update()
+    // {
+    //     // this.environment.environmentMap.updateMaterials()
+    //     // this.scene.matrixWorldNeedsUpdate = true
+    // }
 
 }
