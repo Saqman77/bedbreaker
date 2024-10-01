@@ -17,18 +17,18 @@ export default class Environment
         }
 
         // Setup
-        // this.setSunLight()
-        this.setEnvironmentMap()
+        this.setSunLight()
+        // this.setEnvironmentMap()
     }
 
     setSunLight()
     {
-        this.sunLight = new THREE.DirectionalLight('#ffffff', 4)
-        this.sunLight.castShadow = true
-        this.sunLight.shadow.camera.far = 15
-        this.sunLight.shadow.mapSize.set(1024, 1024)
-        this.sunLight.shadow.normalBias = 0.05
-        this.sunLight.position.set(3.5, 2, - 1.25)
+        this.sunLight = new THREE.AmbientLight('#ffffff', 1)
+        // this.sunLight.castShadow = true
+        // this.sunLight.shadow.camera.far = 15
+        // this.sunLight.shadow.mapSize.set(1024, 1024)
+        // this.sunLight.shadow.normalBias = 0.05
+        // this.sunLight.position.set(3.5, 2, - 1.25)
         this.scene.add(this.sunLight)
 
         // Debug
@@ -36,26 +36,27 @@ export default class Environment
             {
                 this.debugFolder.add(this.sunLight, 'intensity').name('sunLightintensity').min(0).max(10).step(0.001)
             }
-        if(this.debug.active)
-            {
-                this.debugFolder.add(this.sunLight.position, 'x').name('sunLightX').min(-5).max(5).step(0.001)
-            }
-        if(this.debug.active)
-            {
-                this.debugFolder.add(this.sunLight.position, 'y').name('sunLightY').min(-5).max(5).step(0.001)
-            }
-        if(this.debug.active)
-            {
-                this.debugFolder.add(this.sunLight.position, 'z').name('sunLightZ').min(-5).max(5).step(0.001)
-            }
+        // if(this.debug.active)
+        //     {
+        //         this.debugFolder.add(this.sunLight.position, 'x').name('sunLightX').min(-5).max(5).step(0.001)
+        //     }
+        // if(this.debug.active)
+        //     {
+        //         this.debugFolder.add(this.sunLight.position, 'y').name('sunLightY').min(-5).max(5).step(0.001)
+        //     }
+        // if(this.debug.active)
+        //     {
+        //         this.debugFolder.add(this.sunLight.position, 'z').name('sunLightZ').min(-5).max(5).step(0.001)
+        //     }
     }
 
     setEnvironmentMap()
     {
         this.environmentMap = {}
+        // this.scene.background = new THREE.Color( 1, 0, 1 );
         this.environmentMap.intensity = 0.1
-        this.environmentMap.texture = this.resources.items.environmentMapTexture
-        this.environmentMap.texture.colorSpace = THREE.SRGBColorSpace
+        this.environmentMap.texture = new THREE.Color( 1, 0, 1 );
+        // this.environmentMap.texture.colorSpace = THREE.SRGBColorSpace
 
         this.scene.environment = this.environmentMap.texture
 
@@ -64,7 +65,7 @@ export default class Environment
             this.scene.traverse((child) => 
                 {
 
-                    if(child instanceof THREE.Mesh && child.material instanceof THREE.MeshStandardMaterial)
+                    if(child instanceof THREE.Mesh && child.material instanceof THREE.MeshPhongMaterial)
                     {
 
                         child.material.envMap = this.environmentMap.texture
